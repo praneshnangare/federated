@@ -10,7 +10,7 @@ args = fed_learn.get_args()
 
 fed_learn.set_working_GPU(str(args.gpu))
 
-experiment_folder_path = Path(__file__).resolve().parent /
+experiment_folder_path = Path(__file__).resolve().parent
 experiment = fed_learn.Experiment(experiment_folder_path, args.overwrite_experiment)
 experiment.serialize_args(args)
 
