@@ -17,7 +17,7 @@ def get_args():
                         required=False)
     parser.add_argument("-d", "--debug", help="Debugging", action="store_true", required=False)
 
-    parser.add_argument("-lr", "--learning-rate", help="Learning rate", type=float, default=0.15, required=False)
+    parser.add_argument("-lr", "--learning-rate", help="Learning rate", type=float, default=0.015, required=False)
     parser.add_argument("-b", "--batch-size", help="Batch Size", type=int, default=32, required=False)
     parser.add_argument("-ce", "--client-epochs", help="Number of epochs for the clients", type=int, default=1,
                         required=False)
