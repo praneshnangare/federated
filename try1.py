@@ -13,7 +13,8 @@ def live_plot(data_dict, figsize=(7,5), title=''):
     plt.grid(True)
     plt.xlabel('epoch')
     plt.legend(loc='center left') # the plot evolves to the right
-    plt.show();
+    plt.show()
+    plt.clf()
 data = collections.defaultdict(list)
 for i in range(100):
     data['foo'].append(np.random.random())
