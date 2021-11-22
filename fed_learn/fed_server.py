@@ -78,11 +78,7 @@ class Server:
         results = model.evaluate(x_test, y_test, batch_size=32, verbose=1)
 
         results_dict = dict(zip(model.metrics_names, results))
-        print("dict ======== ----- >>>>>   ", self.global_test_metrics_dict.keys() , "    --------        ", results_dict.keys())
-
-        
         for metric_name, value in results_dict.items():
-            print("loop   " , metric_name)
             self.global_test_metrics_dict[metric_name].append(value)
 
         fed_learn.get_rid_of_the_models(model)

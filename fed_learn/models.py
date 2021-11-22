@@ -22,8 +22,9 @@ def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool =
 
     loss = losses.categorical_crossentropy
     optimizer = optimizers.SGD(lr=learning_rate, decay=0.99)
+    # optimizer = optimizers.Adam()
 
-    model.compile(optimizer, loss, metrics=["accuracy"])
+    model.compile('adam', loss, metrics=["accuracy"])
     return model
 
 
