@@ -15,7 +15,7 @@ def live_plot(data_dict, figsize=(7,5), title=''):
     plt.legend(loc='center left') # the plot evolves to the right
     plt.show()
     plt.pause(0.001)
-    plt.cla()
+    plt.close()
 data = collections.defaultdict(list)
 for i in range(100):
     data['foo'].append(np.random.random())
