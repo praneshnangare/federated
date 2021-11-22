@@ -14,7 +14,7 @@ def live_plot(data_dict, figsize=(7,5), title=''):
     plt.xlabel('epoch')
     plt.legend(loc='center left') # the plot evolves to the right
     plt.show()
-    plt.clf()
+    plt.cla()
 data = collections.defaultdict(list)
 for i in range(100):
     data['foo'].append(np.random.random())
