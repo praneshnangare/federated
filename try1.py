@@ -2,7 +2,7 @@ from IPython.display import clear_output
 from matplotlib import pyplot as plt
 import numpy as np
 import collections
-%matplotlib inline
+# %matplotlib inline
 
 def live_plot(data_dict, figsize=(7,5), title=''):
     clear_output(wait=True)
