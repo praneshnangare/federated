@@ -14,7 +14,7 @@ experiment_folder_path = Path(__file__).resolve().parent
 experiment = fed_learn.Experiment(experiment_folder_path, True)
 experiment.serialize_args(args)
 
-#tf_scalar_logger = experiment.create_scalar_logger()
+tf_scalar_logger = experiment.create_scalar_logger()
 
 client_train_params = {"epochs": args.client_epochs, "batch_size": args.batch_size}
 
@@ -61,7 +61,7 @@ for epoch in range(args.global_epochs):
 
     epoch_mean_loss = np.mean(server.epoch_losses)
     server.global_train_losses.append(epoch_mean_loss)
-    #tf_scalar_logger.log_scalar("train_loss/client_mean_loss", server.global_train_losses[-1], epoch)
+    tf_scalar_logger.log_scalar("train_loss/client_mean_loss", server.global_train_losses[-1], epoch)
     print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
 
     global_test_results = server.test_global_model(x_test, y_test)
@@ -70,8 +70,8 @@ for epoch in range(args.global_epochs):
     test_acc = global_test_results["accuracy"]
     print("{0}: {1}".format("Loss", test_loss))
     print("{0}: {1}".format("Accuracy", test_acc))
-    #tf_scalar_logger.log_scalar("test_loss/global_loss", test_loss, epoch)
-    #tf_scalar_logger.log_scalar("test_acc/global_acc", test_acc, epoch)
+    tf_scalar_logger.log_scalar("test_loss/global_loss", test_loss, epoch)
+    tf_scalar_logger.log_scalar("test_acc/global_acc", test_acc, epoch)
 
     with open(str(experiment.train_hist_path), 'w') as f:
         json.dump(server.global_test_metrics_dict, f)
