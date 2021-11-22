@@ -17,7 +17,11 @@ def get_args():
                         required=False)
     parser.add_argument("-d", "--debug", help="Debugging", action="store_true", required=False)
 
+<<<<<<< HEAD
     parser.add_argument("-lr", "--learning-rate", help="Learning rate", type=float, default=0.075, required=False)
+=======
+    parser.add_argument("-lr", "--learning-rate", help="Learning rate", type=float, default=0.015, required=False)
+>>>>>>> f0923c70cbd2d11e4818a725eac1282d71245e6f
     parser.add_argument("-b", "--batch-size", help="Batch Size", type=int, default=32, required=False)
     parser.add_argument("-ce", "--client-epochs", help="Number of epochs for the clients", type=int, default=1,
                         required=False)

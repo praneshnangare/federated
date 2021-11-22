@@ -10,13 +10,13 @@ class Experiment:
     def __init__(self, experiment_folder_path: Path, overwrite_if_exists: bool = False):
         self.experiment_folder_path = experiment_folder_path
 
-        if self.experiment_folder_path.is_dir():
+        '''if self.experiment_folder_path.is_dir():
             if overwrite_if_exists:
                 shutil.rmtree(str(self.experiment_folder_path))
             else:
                 raise Exception("Experiment already exists")
 
-        self.experiment_folder_path.mkdir(parents=True, exist_ok=False)
+        self.experiment_folder_path.mkdir(parents=True, exist_ok=False)'''
 
         self.args_json_path = self.experiment_folder_path / "args.json"
 
