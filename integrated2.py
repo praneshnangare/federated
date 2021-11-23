@@ -131,7 +131,7 @@ class CifarProcessor(BaseDataProcessor):
 
     @staticmethod
     def pre_process(x: np.ndarray, y: np.ndarray, nb_classes: int):
-        y = utils.np_utils.to_categorical(y, nb_classes)
+        y = utils.to_categorical(y, nb_classes)
         x = x.astype(np.float32)
         x /= 255.0
         return x, y
