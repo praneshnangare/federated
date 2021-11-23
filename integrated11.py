@@ -575,8 +575,9 @@ for epoch in range(args['global_epochs']):
     acc1.append(test_acc)
 
     clear_output(wait=True)
-    plt.plot(acc , label = str("1->lr:" + args['learning_rate'] + " Ce:" + args['client_epochs'] + " Fr:" + args['fraction']))
-    plt.plot(acc1, label = str("2->lr:" + args1['learning_rate'] + " Ce:" + args1['client_epochs'] + " Fr:" + args1['fraction']))
+    plt.plot(acc , label = "1->lr:" + str(args['learning_rate']) + " Ce:" + str(args['client_epochs']) + " Fr:" + str(args['fraction']))
+    plt.plot(acc1, label = "2->lr:" + str(args1['learning_rate']) + " Ce:" + str(args1['client_epochs']) + " Fr:" + str(args1['fraction']))
+    plt.grid(True)
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
     # ax[0].xlabel('epoch')
