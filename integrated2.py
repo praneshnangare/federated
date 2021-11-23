@@ -89,7 +89,8 @@ import random
 from typing import List
 
 import numpy as np
-from tensorflow.keras import utils
+# from tensorflow.keras import utils
+from keras.utils import to_categorical
 
 
 def iid_data_indices(nb_clients: int, labels: np.ndarray):
@@ -131,7 +132,7 @@ class CifarProcessor(BaseDataProcessor):
 
     @staticmethod
     def pre_process(x: np.ndarray, y: np.ndarray, nb_classes: int):
-        y = utils.to_categorical(y, nb_classes)
+        y = to_categorical(y, nb_classes)
         x = x.astype(np.float32)
         x /= 255.0
         return x, y
