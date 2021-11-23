@@ -452,7 +452,7 @@ args = {
     "clients": 100,
     "data_sampling_technique": "iid",
     "debug": False,
-    "fraction": 0.1,
+    "fraction": 0.01,
     "global_epochs": 1000,
     "gpu": 0,
     "learning_rate": 0.15,
@@ -497,14 +497,15 @@ acc = []
 plt.ion()
 # fig, ax = plt.subplots(2)
 for epoch in range(args['global_epochs']):
-    # print("Global Epoch {0} is starting".format(epoch))
+    
+    print("Global Epoch {0} is starting".format(epoch))
     server.init_for_new_epoch()
     selected_clients = server.select_clients()
 
-    # print_selected_clients(selected_clients)
+    print_selected_clients(selected_clients)
 
     for client in selected_clients:
-        # print("Client {0} is starting the training".format(client.id))
+        print("Client {0} is starting the training".format(client.id))
         server.send_model(client)
         hist = client.edge_train(server.get_client_train_param_dict())
         server.epoch_losses.append(hist.history["loss"][-1])
@@ -515,26 +516,30 @@ for epoch in range(args['global_epochs']):
     epoch_mean_loss = np.mean(server.epoch_losses)
     server.global_train_losses.append(epoch_mean_loss)
     #tf_scalar_logger.log_scalar("train_loss/client_mean_loss", server.global_train_losses[-1], epoch)
-    # print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
+    print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
 
     global_test_results = server.test_global_model(x_test, y_test)
     # print("--- Global test ---")
     test_loss = global_test_results["loss"]
     test_acc = global_test_results["accuracy"]
-    # print("{0}: {1}".format("Loss", test_loss))
-    # print("{0}: {1}".format("Accuracy", test_acc))
+    print("{0}: {1}".format("Loss", test_loss))
+    print("{0}: {1}".format("Accuracy", test_acc))
     clear_output(wait=True)
     figsize=(7,5)
     plt.figure(figsize=figsize)
     lossi.append(test_loss)
     acc.append(test_acc)
     plt.plot(acc)
+    plt.title('model accuracy')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    # ax[0].plot(acc)
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
     # ax[0].xlabel('epoch')
     # ax[0].legend(['test'], loc='upper left')
 
-    # ax[1].plot(acc)
+    # ax[1].plot(lossi)
     # ax[1].title('model loss')
     # ax[1].ylabel('accuracy')
     # ax[1].xlabel('epoch')
