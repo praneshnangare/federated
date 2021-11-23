@@ -526,15 +526,14 @@ def my_func(args , args1):
 
       for client in selected_clients:
           print("Client {0} is starting the training".format(client.id))
-          print("-------------------")
           server.send_model(client)
           hist = client.edge_train(server.get_client_train_param_dict())
           server.epoch_losses.append(hist.history["loss"][-1])
           server.receive_results(client)
-      print("//////////////////////")
+          
       selected_clients1 = server1.select_clients()
       print_selected_clients(selected_clients1)
-      for client in selected_clients:
+      for client in selected_clients1:
           print("Client {0} is starting the training".format(client.id))
           print(".................")
           server1.send_model(client)
