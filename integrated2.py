@@ -445,7 +445,7 @@ import numpy as np
 from keras import datasets
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
-
+import time
 # args = {
 #     "batch_size": 32,
 #     "client_epochs": 1,
@@ -535,10 +535,12 @@ def my_func(args , args1):
       print_selected_clients(selected_clients)
       for client in selected_clients:
           print("Client {0} is starting the training".format(client.id))
+          print(".................")
           server1.send_model(client)
           hist1 = client.edge_train(server1.get_client_train_param_dict())
           server1.epoch_losses.append(hist1.history["loss"][-1])
           server1.receive_results(client)
+          time.sleep(0.5)
 
       server.summarize_weights()
       server1.summarize_weights()
