@@ -286,7 +286,7 @@ class Server:
 
     def _create_model_with_updated_weights(self) -> models.Model:
         model = self.model_fn()
-        models.set_model_weights(model, self.global_model_weights)
+        set_model_weights(model, self.global_model_weights)
         return model
 
     def send_model(self, client):
