@@ -578,6 +578,7 @@ for epoch in range(args['global_epochs']):
     plt.plot(acc , label = "1->lr:" + str(args['learning_rate']) + " Ce:" + str(args['client_epochs']) + " Fr:" + str(args['fraction']))
     plt.plot(acc1, label = "2->lr:" + str(args1['learning_rate']) + " Ce:" + str(args1['client_epochs']) + " Fr:" + str(args1['fraction']))
     plt.grid(True)
+    plt.legend(loc='upper left')
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
     # ax[0].xlabel('epoch')
