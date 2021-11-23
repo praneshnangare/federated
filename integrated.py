@@ -266,7 +266,6 @@ class Server:
         # Initialize the global model's weights
         self.model_fn = model_fn
         model = self.model_fn()
-        print("model mtric names ------------------------------- >?>>>>>          ",model.metrics_names)
         self.global_test_metrics_dict = {k: [] for k in model.metrics_names}
         self.global_test_metrics_dict['loss'] = []
         self.global_test_metrics_dict['accuracy'] = []
@@ -498,14 +497,14 @@ acc = []
 plt.ion()
 fig, ax = plt.subplots(2)
 for epoch in range(args['global_epochs']):
-    print("Global Epoch {0} is starting".format(epoch))
+    # print("Global Epoch {0} is starting".format(epoch))
     server.init_for_new_epoch()
     selected_clients = server.select_clients()
 
-    print_selected_clients(selected_clients)
+    # print_selected_clients(selected_clients)
 
     for client in selected_clients:
-        print("Client {0} is starting the training".format(client.id))
+        # print("Client {0} is starting the training".format(client.id))
         server.send_model(client)
         hist = client.edge_train(server.get_client_train_param_dict())
         server.epoch_losses.append(hist.history["loss"][-1])
@@ -516,14 +515,14 @@ for epoch in range(args['global_epochs']):
     epoch_mean_loss = np.mean(server.epoch_losses)
     server.global_train_losses.append(epoch_mean_loss)
     #tf_scalar_logger.log_scalar("train_loss/client_mean_loss", server.global_train_losses[-1], epoch)
-    print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
+    # print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
 
     global_test_results = server.test_global_model(x_test, y_test)
-    print("--- Global test ---")
+    # print("--- Global test ---")
     test_loss = global_test_results["loss"]
     test_acc = global_test_results["accuracy"]
-    print("{0}: {1}".format("Loss", test_loss))
-    print("{0}: {1}".format("Accuracy", test_acc))
+    # print("{0}: {1}".format("Loss", test_loss))
+    # print("{0}: {1}".format("Accuracy", test_acc))
     lossi.append(test_loss)
     acc.append(test_acc)
     ax[0].plot(lossi)
@@ -549,4 +548,4 @@ for epoch in range(args['global_epochs']):
     # # TODO: save only when a condition is fulfilled (validation loss gets better, etc...)
     # server.save_model_weights(experiment.global_weight_path)
 
-    print("_" * 30)
+    # print("_" * 30)
