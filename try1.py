@@ -1,31 +1,24 @@
-# import matplotlib.pyplot as plt
-import time
-# lossi = []
-# for i in range(1000):
-#   lossi.append(i)
-#   plt.plot(lossi)
-#   # plt.plot(history.history['val_accuracy'])
-#   plt.title('model loss')
-#   plt.ylabel('loss')
-#   plt.xlabel('epoch')
-#   plt.legend(['test'], loc='upper left')
-#   plt.show()
-#   time.sleep(0.3)
-
-import matplotlib.pyplot as plt
+from IPython.display import clear_output
+from matplotlib import pyplot as plt
 import numpy as np
+import collections
+# %matplotlib inline
 
-plt.ion()
-fig, ax = plt.subplots(1,2)
-# fig = plt.figure()
-for i in range(50):
-    y = np.random.random([10,1])
-    ax[0].clear()
-    ax[1].clear()
-    ax[0].plot(y)
-    ax[1].plot(-y)
+def live_plot(data_dict, figsize=(7,5), title=''):
+    clear_output(wait=True)
+    plt.figure(figsize=figsize)
+    for label,data in data_dict.items():
+        plt.plot(data, label=label)
+    plt.title(title)
+    plt.grid(True)
+    plt.xlabel('epoch')
+    plt.legend(loc='center left') # the plot evolves to the right
     plt.show()
     plt.pause(0.001)
-    # plt.clf()
-    # fig.clear()
-    time.sleep(0.02)
+    plt.close()
+data = collections.defaultdict(list)
+for i in range(100):
+    data['foo'].append(np.random.random())
+    data['bar'].append(np.random.random())
+    data['baz'].append(np.random.random())
+    live_plot(data)
