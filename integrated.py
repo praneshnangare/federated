@@ -442,7 +442,7 @@ from pathlib import Path
 
 import numpy as np
 from keras import datasets
-
+from IPython.display import clear_output
 # import fed_learn
 import matplotlib.pyplot as plt
 # args = fed_learn.get_args()
@@ -495,7 +495,7 @@ x_test, y_test = data_handler.preprocess(data_handler.x_test, data_handler.y_tes
 lossi = []
 acc = []
 plt.ion()
-fig, ax = plt.subplots(2)
+# fig, ax = plt.subplots(2)
 for epoch in range(args['global_epochs']):
     # print("Global Epoch {0} is starting".format(epoch))
     server.init_for_new_epoch()
@@ -523,22 +523,25 @@ for epoch in range(args['global_epochs']):
     test_acc = global_test_results["accuracy"]
     # print("{0}: {1}".format("Loss", test_loss))
     # print("{0}: {1}".format("Accuracy", test_acc))
+    clear_output(wait=True)
+    figsize=(7,5)
+    plt.figure(figsize=figsize)
     lossi.append(test_loss)
     acc.append(test_acc)
-    ax[0].plot(lossi)
+    plt.plot(acc)
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
     # ax[0].xlabel('epoch')
     # ax[0].legend(['test'], loc='upper left')
 
-    ax[1].plot(acc)
+    # ax[1].plot(acc)
     # ax[1].title('model loss')
     # ax[1].ylabel('accuracy')
     # ax[1].xlabel('epoch')
     # ax[1].legend(['test'], loc='upper right')
     plt.show()
-    plt.pause(0.0001)
-    plt.clf()
+    plt.pause(0.001)
+    plt.close()
     #tf_scalar_logger.log_scalar("test_loss/global_loss", test_loss, epoch)
     #tf_scalar_logger.log_scalar("test_acc/global_acc", test_acc, epoch)
 
