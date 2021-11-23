@@ -485,10 +485,10 @@ def my_func(args , args1):
   client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
 
   def model_fn():
-      model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
+    model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
     return model
   def model_fn1():
-      model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
+    model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
     return model
   weight_summarizer = FedAvg()
   server = Server(model_fn,
