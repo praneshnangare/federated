@@ -1,6 +1,6 @@
 from tensorflow.keras import backend as K
 from tensorflow.keras import optimizers, losses, models, layers
-from keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.vgg16 import VGG16
 
 
 def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool = False, learning_rate: float = 0.01):
