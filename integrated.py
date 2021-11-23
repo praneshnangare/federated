@@ -21,7 +21,7 @@ def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool =
   model = models.Model(model.input, x)
 
   loss = losses.categorical_crossentropy
-  optimizer = optimizers.SGD(lr=learning_rate, decay=0.99)
+  optimizer = optimizers.SGD(lr=learning_rate)
   # optimizer = optimizers.Adam()
 
   model.compile('adam', loss, metrics=["accuracy"])
@@ -455,7 +455,7 @@ args = {
     "fraction": 0.01,
     "global_epochs": 1000,
     "gpu": 0,
-    "learning_rate": 0.15,
+    "learning_rate": 0.0015,
     "name": "iid",
     "overwrite_experiment": False,
     "weights_file": None
