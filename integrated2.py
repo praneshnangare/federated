@@ -46,7 +46,7 @@ def set_model_weights(model: models.Model, weight_list):
 
 from typing import Callable
 
-from keras import models
+from tensorflow.keras import models
 
 
 class Client:
@@ -89,7 +89,7 @@ import random
 from typing import List
 
 import numpy as np
-from keras import utils
+from tensorflow.keras import utils
 
 
 def iid_data_indices(nb_clients: int, labels: np.ndarray):
@@ -253,7 +253,7 @@ class FedAvg(WeightSummarizer):
 from typing import Callable
 
 import numpy as np
-from keras import models
+from tensorflow.keras import models
 class Server:
     def __init__(self, model_fn: Callable,
                  weight_summarizer: WeightSummarizer,
@@ -442,7 +442,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from keras import datasets
+from tensorflow.keras import datasets
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 import time
