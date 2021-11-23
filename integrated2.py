@@ -474,6 +474,18 @@ import time
 #     "overwrite_experiment": False,
 #     "weights_file": None
 # }
+
+import tensorflow as tf
+
+try:
+  tpu = tf.distribute.cluster_resolver.TPUClusterResolver()  # TPU detection
+except ValueError:
+  raise BaseException('ERROR: Not connected to a TPU runtime; please see the previous cell in this notebook for instructions!')
+
+tf.config.experimental_connect_to_cluster(tpu)
+tf.tpu.experimental.initialize_tpu_system(tpu)
+tpu_strategy = tf.distribute.experimental.TPUStrategy(tpu)
+
 def my_func(args , args1):
   set_working_GPU(str(args['gpu']))
 
@@ -481,10 +493,13 @@ def my_func(args , args1):
   client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
 
   def model_fn():
-      return create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
+    with tpu_strategy.scope():
+      model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
+    return model
   def model_fn1():
-      return create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
-
+    with tpu_strategy.scope():
+      model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
+    return model
   weight_summarizer = FedAvg()
   server = Server(model_fn,
                             weight_summarizer,
