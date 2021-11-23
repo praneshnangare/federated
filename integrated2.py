@@ -90,7 +90,7 @@ from typing import List
 
 import numpy as np
 # from tensorflow.keras import utils
-from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 
 
 def iid_data_indices(nb_clients: int, labels: np.ndarray):
