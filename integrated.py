@@ -452,7 +452,7 @@ args = {
     "clients": 100,
     "data_sampling_technique": "iid",
     "debug": False,
-    "fraction": 0.01,
+    "fraction": 0.1,
     "global_epochs": 1000,
     "gpu": 0,
     "learning_rate": 0.0015,
@@ -531,8 +531,8 @@ for epoch in range(args['global_epochs']):
     acc.append(test_acc)
     plt.plot(acc)
     plt.title('model accuracy')
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
     # ax[0].plot(acc)
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
