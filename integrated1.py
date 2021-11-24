@@ -461,73 +461,50 @@ args = {
     "overwrite_experiment": False,
     "weights_file": None
 }
-args1 = {
-    "batch_size": 32,
-    "client_epochs": 1,
-    "clients": 100,
-    "data_sampling_technique": "iid",
-    "debug": False,
-    "fraction": 0.1,
-    "global_epochs": 1000,
-    "gpu": 0,
-    "learning_rate": 0.15,
-    "name": "iid",
-    "overwrite_experiment": False,
-    "weights_file": None
-}
+
 set_working_GPU(str(args['gpu']))
 
-# experiment_folder_path = Path(__file__).resolve().parent
-# experiment = fed_learn.Experiment(experiment_folder_path, True)
-# experiment.serialize_args(args)
+experiment_folder_path = Path(__file__).resolve().parent
+experiment = fed_learn.Experiment(experiment_folder_path, True)
+experiment.serialize_args(args)
 
 #tf_scalar_logger = experiment.create_scalar_logger()
 
 client_train_params = {"epochs": args['client_epochs'], "batch_size": args['batch_size']}
-client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
+
 
 def model_fn():
     return create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
-def model_fn1():
-    return create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
+
 
 weight_summarizer = FedAvg()
 server = Server(model_fn,
                           weight_summarizer,
                           args['clients'],
                           args['fraction'])
-server1 = Server(model_fn,
-                          weight_summarizer,
-                          args1['clients'],
-                          args1['fraction'])
+
 weight_path = args['weights_file']
-weight_path1 = args1['weights_file']
+
 if weight_path is not None:
     server.load_model_weights(weight_path)
-if weight_path1 is not None:
-    server1.load_model_weights(weight_path1)
+
 server.update_client_train_params(client_train_params)
 server.create_clients()
-server1.update_client_train_params(client_train_params1)
-server1.create_clients()
+
 
 (x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
 data_handler = DataHandler(x_train, y_train, x_test, y_test, CifarProcessor(), args['debug'])
 data_handler.assign_data_to_clients(server.clients, args['data_sampling_technique'])
-data_handler.assign_data_to_clients(server1.clients, args1['data_sampling_technique'])
 x_test, y_test = data_handler.preprocess(data_handler.x_test, data_handler.y_test)
 
 lossi = []
 acc = []
-lossi1 = []
-acc1 = []
 
 plt.ion()
 # fig, ax = plt.subplots(2)
 for epoch in range(args['global_epochs']):
     print("Global Epoch {0} is starting".format(epoch))
     server.init_for_new_epoch()
-    server1.init_for_new_epoch()
     selected_clients = server.select_clients()
     print_selected_clients(selected_clients)
 
@@ -537,14 +514,8 @@ for epoch in range(args['global_epochs']):
         hist = client.edge_train(server.get_client_train_param_dict())
         server.epoch_losses.append(hist.history["loss"][-1])
         server.receive_results(client)
-
-        server1.send_model(client)
-        hist1 = client.edge_train(server1.get_client_train_param_dict())
-        server1.epoch_losses.append(hist1.history["loss"][-1])
-        server1.receive_results(client)
-
+        
     server.summarize_weights()
-    server1.summarize_weights()
 
     epoch_mean_loss = np.mean(server.epoch_losses)
     server.global_train_losses.append(epoch_mean_loss)
@@ -559,24 +530,8 @@ for epoch in range(args['global_epochs']):
     print("{0}: {1}".format("Accuracy", test_acc))
     lossi.append(test_loss)
     acc.append(test_acc)
-
-    epoch_mean_loss1 = np.mean(server1.epoch_losses)
-    server1.global_train_losses.append(epoch_mean_loss1)
-    #tf_scalar_logger.log_scalar("train_loss/client_mean_loss", server.global_train_losses[-1], epoch)
-    print("Loss1 (client mean): {0}".format(server1.global_train_losses[-1]))
-
-    global_test_results1 = server1.test_global_model(x_test, y_test)
-    print("--- Global test ---")
-    test_loss = global_test_results1["loss"]
-    test_acc = global_test_results1["accuracy"]
-    print("{0}: {1}".format("Loss1", test_loss))
-    print("{0}: {1}".format("Accuracy1", test_acc))
-    lossi1.append(test_loss)
-    acc1.append(test_acc)
-
-
+    
     plt.plot(acc)
-    plt.plot(acc1)
     # ax[0].title('model loss')
     # ax[0].ylabel('loss')
     # ax[0].xlabel('epoch')
@@ -593,10 +548,10 @@ for epoch in range(args['global_epochs']):
     #tf_scalar_logger.log_scalar("test_loss/global_loss", test_loss, epoch)
     #tf_scalar_logger.log_scalar("test_acc/global_acc", test_acc, epoch)
 
-    # with open(str(experiment.train_hist_path), 'w') as f:
-    #     json.dump(server.global_test_metrics_dict, f)
+    with open(str(experiment.train_hist_path), 'w') as f:
+        json.dump(server.global_test_metrics_dict, f)
 
-    # # TODO: save only when a condition is fulfilled (validation loss gets better, etc...)
-    # server.save_model_weights(experiment.global_weight_path)
+    # TODO: save only when a condition is fulfilled (validation loss gets better, etc...)
+    server.save_model_weights(experiment.global_weight_path)
 
     print("_" * 30)
