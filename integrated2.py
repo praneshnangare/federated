@@ -24,7 +24,7 @@ def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool =
   optimizer = optimizers.SGD(lr=learning_rate)
 #   optimizer = optimizers.Adam()
 
-  model.compile(optimizer= optimizer, loss, metrics=["accuracy"])
+  model.compile(optimizer, loss, metrics=["accuracy"])
   return model
 
 
