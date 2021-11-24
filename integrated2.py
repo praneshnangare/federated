@@ -502,7 +502,7 @@ def my_func(args , args1 , one):
   lossi = []
   acc = []
   
-  if (!one):
+  if (not one):
     client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
     def model_fn1():
       model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
@@ -535,7 +535,7 @@ def my_func(args , args1 , one):
           hist = client.edge_train(server.get_client_train_param_dict())
           server.epoch_losses.append(hist.history["loss"][-1])
           server.receive_results(client)
-      if (!one): 
+      if (not one): 
         server1.init_for_new_epoch()
         selected_clients1 = server1.select_clients()
         print_selected_clients(selected_clients1)
@@ -560,7 +560,7 @@ def my_func(args , args1 , one):
       lossi.append(test_loss)
       acc.append(test_acc)
 
-      if(!one):
+      if(not one):
         server1.summarize_weights()
         epoch_mean_loss1 = np.mean(server1.epoch_losses)
         server1.global_train_losses.append(epoch_mean_loss1)
@@ -577,7 +577,7 @@ def my_func(args , args1 , one):
 
       clear_output(wait=True)
       plt.plot(acc , label = "1->lr:" + str(args['learning_rate']) + " Ce:" + str(args['client_epochs']) + " Fr:" + str(args['fraction']))
-      if (!one):
+      if (not one):
         plt.plot(acc1, label = "2->lr:" + str(args1['learning_rate']) + " Ce:" + str(args1['client_epochs']) + " Fr:" + str(args1['fraction']))
       plt.grid(True)
       plt.legend(loc='upper left')
