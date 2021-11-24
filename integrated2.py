@@ -478,54 +478,54 @@ import time
 
 
 
-def my_func(args , args1):
+def my_func(args , args1 , one):
   set_working_GPU(str(args['gpu']))
 
   client_train_params = {"epochs": args['client_epochs'], "batch_size": args['batch_size']}
-  client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
-
   def model_fn():
     model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
-    return model
-  def model_fn1():
-    model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
     return model
   weight_summarizer = FedAvg()
   server = Server(model_fn,
                             weight_summarizer,
                             args['clients'],
                             args['fraction'])
-  server1 = Server(model_fn,
-                            weight_summarizer,
-                            args1['clients'],
-                            args1['fraction'])
   weight_path = args['weights_file']
-  weight_path1 = args1['weights_file']
   if weight_path is not None:
       server.load_model_weights(weight_path)
-  if weight_path1 is not None:
-      server1.load_model_weights(weight_path1)
   server.update_client_train_params(client_train_params)
   server.create_clients()
-  server1.update_client_train_params(client_train_params1)
-  server1.create_clients()
-
   (x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
   data_handler = DataHandler(x_train, y_train, x_test, y_test, CifarProcessor(), args['debug'])
   data_handler.assign_data_to_clients(server.clients, args['data_sampling_technique'])
-  data_handler.assign_data_to_clients(server1.clients, args1['data_sampling_technique'])
   x_test, y_test = data_handler.preprocess(data_handler.x_test, data_handler.y_test)
-
   lossi = []
   acc = []
-  lossi1 = []
-  acc1 = []
+  
+  if (!one):
+    client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
+    def model_fn1():
+      model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
+      return model
+    server1 = Server(model_fn,
+                              weight_summarizer,
+                              args1['clients'],
+                              args1['fraction'])
+
+    weight_path1 = args1['weights_file']
+    if weight_path1 is not None:
+        server1.load_model_weights(weight_path1)
+
+    server1.update_client_train_params(client_train_params1)
+    server1.create_clients()
+    data_handler.assign_data_to_clients(server1.clients, args1['data_sampling_technique'])
+    lossi1 = []
+    acc1 = []
 
   plt.ion()
   for epoch in range(args['global_epochs']):
       print("Global Epoch {0} is starting".format(epoch))
       server.init_for_new_epoch()
-      server1.init_for_new_epoch()
       selected_clients = server.select_clients()
       print_selected_clients(selected_clients)
 
@@ -535,21 +535,18 @@ def my_func(args , args1):
           hist = client.edge_train(server.get_client_train_param_dict())
           server.epoch_losses.append(hist.history["loss"][-1])
           server.receive_results(client)
+      if (!one): 
+        server1.init_for_new_epoch()
+        selected_clients1 = server1.select_clients()
+        print_selected_clients(selected_clients1)
+        for client in selected_clients1:
+            print("Client {0} is starting the training".format(client.id)) 
+            server1.send_model(client)
+            hist1 = client.edge_train(server1.get_client_train_param_dict())
+            server1.epoch_losses.append(hist1.history["loss"][-1])
+            server1.receive_results(client)
           
-      selected_clients1 = server1.select_clients()
-      print_selected_clients(selected_clients1)
-      for client in selected_clients1:
-          print("Client {0} is starting the training".format(client.id))
-          print(".................")
-          server1.send_model(client)
-          hist1 = client.edge_train(server1.get_client_train_param_dict())
-          server1.epoch_losses.append(hist1.history["loss"][-1])
-          server1.receive_results(client)
-          time.sleep(0.5)
-
       server.summarize_weights()
-      server1.summarize_weights()
-
       epoch_mean_loss = np.mean(server.epoch_losses)
       server.global_train_losses.append(epoch_mean_loss)
       print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
@@ -563,18 +560,20 @@ def my_func(args , args1):
       lossi.append(test_loss)
       acc.append(test_acc)
 
-      epoch_mean_loss1 = np.mean(server1.epoch_losses)
-      server1.global_train_losses.append(epoch_mean_loss1)
-      print("Loss1 (client mean): {0}".format(server1.global_train_losses[-1]))
+      if(!one):
+        server1.summarize_weights()
+        epoch_mean_loss1 = np.mean(server1.epoch_losses)
+        server1.global_train_losses.append(epoch_mean_loss1)
+        print("Loss1 (client mean): {0}".format(server1.global_train_losses[-1]))
 
-      global_test_results1 = server1.test_global_model(x_test, y_test)
-      print("--- Global test ---")
-      test_loss = global_test_results1["loss"]
-      test_acc = global_test_results1["accuracy"]
-      print("{0}: {1}".format("Loss1", test_loss))
-      print("{0}: {1}".format("Accuracy1", test_acc))
-      lossi1.append(test_loss)
-      acc1.append(test_acc)
+        global_test_results1 = server1.test_global_model(x_test, y_test)
+        print("--- Global test ---")
+        test_loss = global_test_results1["loss"]
+        test_acc = global_test_results1["accuracy"]
+        print("{0}: {1}".format("Loss1", test_loss))
+        print("{0}: {1}".format("Accuracy1", test_acc))
+        lossi1.append(test_loss)
+        acc1.append(test_acc)
 
       clear_output(wait=True)
       plt.plot(acc , label = "1->lr:" + str(args['learning_rate']) + " Ce:" + str(args['client_epochs']) + " Fr:" + str(args['fraction']))
