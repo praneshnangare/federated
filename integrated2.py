@@ -480,7 +480,8 @@ import time
 
 def my_func(args , args1 , one):
   set_working_GPU(str(args['gpu']))
-
+  experiment_folder_path = Path(__file__).resolve().parent
+  experiment = fed_learn.Experiment(experiment_folder_path, True)
   client_train_params = {"epochs": args['client_epochs'], "batch_size": args['batch_size']}
   def model_fn():
     model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
@@ -584,4 +585,5 @@ def my_func(args , args1 , one):
       plt.show()
       plt.pause(0.0001)
       plt.clf()
+      server.save_model_weights(experiment.global_weight_path)
       print("_" * 30)
