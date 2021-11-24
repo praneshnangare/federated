@@ -2,7 +2,27 @@ from tensorflow.keras import backend as K
 from tensorflow.keras import optimizers, losses, models, layers
 from tensorflow.keras.applications.vgg16 import VGG16
 
+import shutil
+from pathlib import Path
 
+#from swiss_army_tensorboard import tfboard_loggers
+class Experiment:
+    def __init__(self, experiment_folder_path: Path, overwrite_if_exists: bool = False , A):
+        self.experiment_folder_path = experiment_folder_path
+
+        '''if self.experiment_folder_path.is_dir():
+            if overwrite_if_exists:
+                shutil.rmtree(str(self.experiment_folder_path))
+            else:
+                raise Exception("Experiment already exists")
+        self.experiment_folder_path.mkdir(parents=True, exist_ok=False)'''
+
+        self.args_json_path = self.experiment_folder_path / "args.json"
+
+        self.train_hist_path = self.experiment_folder_path / "fed_learn_global_test_results.json"
+        self.global_weight_path = self.experiment_folder_path / "global_weights" + A + ".h5"
+        
+        
 def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool = False, learning_rate: float = 0.01):
   weights = None
   if init_with_imagenet:
@@ -481,7 +501,7 @@ import time
 def my_func(args , args1 , one):
   set_working_GPU(str(args['gpu']))
   experiment_folder_path = Path(__file__).resolve().parent
-  experiment = fed_learn.Experiment(experiment_folder_path, True)
+  experiment = Experiment(experiment_folder_path, True , "A")
   client_train_params = {"epochs": args['client_epochs'], "batch_size": args['batch_size']}
   def model_fn():
     model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
@@ -504,6 +524,7 @@ def my_func(args , args1 , one):
   acc = []
   
   if (not one):
+    experiment1 = Experiment(experiment_folder_path, True , "B")
     client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
     def model_fn1():
       model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
@@ -586,4 +607,6 @@ def my_func(args , args1 , one):
       plt.pause(0.0001)
       plt.clf()
       server.save_model_weights(experiment.global_weight_path)
+      if (not one):
+        server1.save_model_weights(experiment1.global_weight_path)
       print("_" * 30)
