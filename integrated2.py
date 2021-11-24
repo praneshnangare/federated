@@ -577,7 +577,8 @@ def my_func(args , args1 , one):
 
       clear_output(wait=True)
       plt.plot(acc , label = "1->lr:" + str(args['learning_rate']) + " Ce:" + str(args['client_epochs']) + " Fr:" + str(args['fraction']))
-      plt.plot(acc1, label = "2->lr:" + str(args1['learning_rate']) + " Ce:" + str(args1['client_epochs']) + " Fr:" + str(args1['fraction']))
+      if (!one):
+        plt.plot(acc1, label = "2->lr:" + str(args1['learning_rate']) + " Ce:" + str(args1['client_epochs']) + " Fr:" + str(args1['fraction']))
       plt.grid(True)
       plt.legend(loc='upper left')
       plt.show()
