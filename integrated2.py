@@ -546,6 +546,11 @@ def my_func(args , args1 , one):
 
   plt.ion()
   for epoch in range(args['global_epochs']):
+      if(epoch != 0):
+          print("Loss (client mean): {0}".format(server.global_train_losses[-1]))
+          print("{0}: {1}".format("Loss", test_loss))
+          print("{0}: {1}".format("Accuracy", test_acc))
+        
       print("Global Epoch {0} is starting".format(epoch))
       server.init_for_new_epoch()
       selected_clients = server.select_clients()
