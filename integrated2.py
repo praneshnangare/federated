@@ -7,7 +7,7 @@ from pathlib import Path
 
 #from swiss_army_tensorboard import tfboard_loggers
 class Experiment:
-    def __init__(self, experiment_folder_path: Path, overwrite_if_exists: bool = False , A):
+    def __init__(self, experiment_folder_path: Path, A, overwrite_if_exists: bool = False ):
         self.experiment_folder_path = experiment_folder_path
 
         '''if self.experiment_folder_path.is_dir():
@@ -501,7 +501,7 @@ import time
 def my_func(args , args1 , one):
   set_working_GPU(str(args['gpu']))
   experiment_folder_path = Path(__file__).resolve().parent
-  experiment = Experiment(experiment_folder_path, True , "A")
+  experiment = Experiment(experiment_folder_path, "A", True )
   client_train_params = {"epochs": args['client_epochs'], "batch_size": args['batch_size']}
   def model_fn():
     model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args['learning_rate'])
@@ -524,7 +524,7 @@ def my_func(args , args1 , one):
   acc = []
   
   if (not one):
-    experiment1 = Experiment(experiment_folder_path, True , "B")
+    experiment1 = Experiment(experiment_folder_path, "B", True )
     client_train_params1 = {"epochs": args1['client_epochs'], "batch_size": args1['batch_size']}
     def model_fn1():
       model = create_model((32, 32, 3), 10, init_with_imagenet=False, learning_rate=args1['learning_rate'])
