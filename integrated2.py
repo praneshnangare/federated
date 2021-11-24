@@ -20,7 +20,7 @@ class Experiment:
         self.args_json_path = self.experiment_folder_path / "args.json"
 
         self.train_hist_path = self.experiment_folder_path / "fed_learn_global_test_results.json"
-        self.global_weight_path = self.experiment_folder_path / "global_weights" + A + ".h5"
+        self.global_weight_path = self.experiment_folder_path / str("global_weights" + str(A) + ".h5")
         
         
 def create_model(input_shape: tuple, nb_classes: int, init_with_imagenet: bool = False, learning_rate: float = 0.01):
